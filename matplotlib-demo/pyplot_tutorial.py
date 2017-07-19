@@ -10,7 +10,6 @@ https://zhuanlan.zhihu.com/p/24309547
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 def test6():
     """
     ====================
@@ -19,12 +18,6 @@ def test6():
 
     This example showcases a simple horizontal bar chart.
     """
-    import matplotlib.pyplot as plt
-    plt.rcdefaults()
-    import numpy as np
-    import matplotlib.pyplot as plt
-
-
     plt.rcdefaults()
     fig, ax = plt.subplots()
 
