@@ -17,3 +17,4 @@ Demo是学习任何一项技术的开始。因此把每次学习新的技术写�
 - sqlalchemy		ORM
 - wordcloud			生成词云的库
 - python-demo		基本语法
+- elasticsearch	    搜索
