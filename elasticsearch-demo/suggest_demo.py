@@ -4,6 +4,7 @@
 from elasticsearch_dsl import DocType, Text, Keyword, Completion
 from elasticsearch_dsl.connections import connections
 
+
 connections.create_connection(hosts=['localhost'])
 
 
