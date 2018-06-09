@@ -30,7 +30,6 @@ class House(DocType):
     def save(self, ** kwargs):
         return super(House, self).save(** kwargs)
 
-
 House.init()
 
 
@@ -45,6 +44,27 @@ def add_house(id_, city, address, price, location, created_at):
     house.save()
 
 
+class Post(DocType):
+    title = String()
+    content = Text()
+    votes = Integer()
+    created_at = Date()
+
+    class Meta:
+        index = 'blogposts'
+        type = 'post'
+
+Post.init()
+
+
+def add_post(id_, title, content):
+    post = Post(meta={'id': id_})
+    post.title = title
+    post.content = content
+    post.votes = random.randint(0, 100)
+    post.save()
+
+
 def init_data():
     add_house(1, 'Fort Myers', '12560 Kelly Palm Dr', 339900, (26.494627, -81.961609), '2015-03-01 11:58:04')
     add_house(2, 'San Antonio', '1889 Mclain Rd', 2350000, (28.226024, -82.448905), '2015-03-03 08:04:08')
@@ -56,6 +76,17 @@ def init_data():
     add_house(8, 'Bradenton', '4900 BUNNIE Lane', 419990, (27.215368, -82.456293), '2017-08-11 12:28:57')
     add_house(9, 'Fort Lauderdale', '7911 Burgoyne', 555000, (28.473397, -81.567864), '2017-08-11 12:03:59')
     add_house(10, 'Nineveh', '9194  Bay Point Dr', 239100, (26.110462, -80.262753), '2017-08-11 12:37:32')
+
+    add_post(1, 'Python is good', 'Python is good')
+    add_post(2, 'Python is beautiful', 'Python is beautiful')
+    add_post(3, 'Python is nice', 'Python is nice')
+    add_post(4, 'Today is good day', 'Today is good day')
+    add_post(5, 'Today is nice day', 'Today is nice day')
+    add_post(6, 'The key aspect in promoting', 'The key aspect in promoting')
+    add_post(7, 'Just a month after we started', 'Just a month after we started working on reddit')
+    add_post(8, "If I can't hear your heartbeat", "If I can't hear your heartbeat, you're too far away.")
+    add_post(9, 'No Country for Old Men', 'No Country for Old Men')
+    add_post(10, 'Django is web framework', 'Django is python lib')
 
 
 def test_raw_function_score():
@@ -129,7 +160,25 @@ def test_function_score_gauss():
         print(h.city, h.location)
 
 
-def test_function_score_random():
+def test_field_value_factor():
+    q = query.Q(
+        'function_score',
+        query=query.Q("multi_match", query='python', fields=['title', 'content']),
+        functions=[
+            query.SF('field_value_factor', field='votes', modifier='log1p', factor=0.1)
+        ],
+        score_mode="sum",
+        max_boost=1.5
+    )
+    s = Post.search()
+    s = s.query(q)
+    print(s.to_dict())
+    response = s.execute()
+    for h in response:
+        print(h.title)
+
+
+def test_random_score():
     """
     random_score 函数，它的输出是一个介于0到1之间的数字，当给它提供相同的seed值时，它能够产生一致性随机的结果
     random_score 子句不包含任何的filter，因此它适用于所有文档。
@@ -157,16 +206,10 @@ def test_function_score_random():
         print(h.city, h.location)
 
 
-def test_wildcard_query():
-    pass
-
-
 if __name__ == '__main__':
     # init_data()
     # test_raw_function_score()
-    # test_function_score_exp()
-    # test_function_score_gauss()
-    test_function_score_random()
+    test_field_value_factor()
     pass
 
 
