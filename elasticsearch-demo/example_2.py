@@ -137,6 +137,16 @@ def test_sorting():
     print(s.to_dict())
 
 
+def test_prefix():
+    s = Search()
+    q = Q('prefix', title='dj')
+    s = s.query(q)
+    print(s.to_dict())
+    response = s.execute()
+    print response
+    for hit in s:
+        print(hit.title)
+
 if __name__ == '__main__':
     # init_test_data()
     # test_simple_search()
@@ -144,4 +154,4 @@ if __name__ == '__main__':
     # test_query_combination()
     # test_filters()
     # test_aggregations()
-    test_sorting()
+    # test_sorting()
